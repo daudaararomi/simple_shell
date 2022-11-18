@@ -7,18 +7,14 @@
  * main - a UNIX command line interpreter
  *@ac: number of command
  *@argv:vector of command
- *
  * Return: Nothing
- *
  */
-
-void  main(int ac, char **argv)
+int main(int ac, char **argv)
 {
-	char *lineptr = NULL, *lineptr_copy = NULL;
+	char *lineptr = NULL;
 	size_t n = 0;
 	ssize_t nchars_read;
 	const char *delim = " \n";
-	char **tokens;
 	char *token;
 	(void)ac;
 
@@ -26,8 +22,8 @@ void  main(int ac, char **argv)
 	{
 		printf("arafun $");
 		nchars_read = getline(&lineptr, &n, stdin);
-	     	  if (nchars_read == -1)
-		  {
+		if (nchars_read == -1)
+		{
 			if (feof(stdin))
 			{
 				exit(EXIT_SUCCESS);
@@ -38,30 +34,21 @@ void  main(int ac, char **argv)
 				exit(EXIT_FAILURE);
 			}
 		}
-		  tokens= malloc(nchars_read * sizeof(char*));
-		  if (!tokens)
-		  {
-			  fprintf(stderr, "lsh: allocation error\n");
-			  exit(EXIT_FAILURE);
-			  }
-		  token = strtok(lineptr, delim);
-		  while (token != NULL)
-		  {
-			  *tokens = token;
-			 argv = tokens;
-			  tokens++;
-			  token = strtok(NULL, delim);
-		  }
-		  tokens++;
-		  *tokens = NULL;
-		  argv[1] = *tokens;
+		argv = malloc(nchars_read * sizeof(char *));
+		if (!argv)
+		{
+			fprintf(stderr, "lsh: allocation error\n");
+			exit(EXIT_FAILURE);
+		}
+		token = strtok(lineptr, delim);
+		while (token != NULL)
+		{
+			*argv = token;
+			token = strtok(NULL, delim);
+		}
+		argv[1] = NULL;
 		execmd(argv);
-
 	}
-
-
-	free(tokens);
+	free(argv);
 	free(lineptr);
-
-	return (0);
 }
