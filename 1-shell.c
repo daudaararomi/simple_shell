@@ -103,4 +103,7 @@ int main(void)
 		free(tokens);
 		free(line);
 	}
+	if (isatty(STDIN_FILENO))
+		write(STDOUT_FILENO, "\n", 1);
+	return (0);
 }
